@@ -11,34 +11,21 @@ Použití funkce `_CrtDumpMemoryLeaks()` je obvykle součástí procesu ladění
 ### Ukázka použití
 
 ```c
-#include <iostream>
-#include <cstdlib>
+#define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+#include <stdio.h>
 
-void causeMemoryLeak()
-{
-    // Alokace paměti bez jejího uvolnění
-    int* pInt = new int;
-    // Neprovádíme uvolnění paměti
-    // Paměťový únik
+int main() {
+      printf("Hello World\n");
+
+      int* i = (int*)malloc(sizeof(int));
+
+      _CrtDumpMemoryLeaks();
+
+      return 0;
 }
-
-int main()
-{
-    // Zapnutí detekce paměťových úniků
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-    // Volání funkce, která způsobí paměťový únik
-    causeMemoryLeak();
-
-    // Zobrazení zprávy o paměťových únicích (pokud jsou detekovány)
-    _CrtDumpMemoryLeaks();
-
-    return 0;
-}
-
 ```
 
-V tomto příkladu je funkce `_CrtSetDbgFlag()` použita k zapnutí detekce paměťových úniků, a to pomocí flagů `_CRTDBG_ALLOC_MEM_DF` a `_CRTDBG_LEAK_CHECK_DF`. Následně je volána funkce `causeMemoryLeak()`, která alokuje paměť, ale neprovádí její uvolnění, čímž způsobí paměťový únik. Nakonec je volána funkce `_CrtDumpMemoryLeaks()`, která zobrazí zprávu o detekovaných paměťových únicích, pokud jsou nějaké nalezeny.
-
 Je důležité poznamenat, že používání `_CrtDumpMemoryLeaks()` je především pro účely ladění a testování a nemělo by být používáno v produkčním kódu, protože může generovat falešné pozitivy nebo negativy a může mít negativní dopad na výkon aplikace. Je také důležité zajistit, že vývojový kód je správně uvolňuje všechnu alokovanou paměť před ukončením programu, aby se minimalizovaly paměťové úniky.
+
+![memory_leaks.png](memory_leaks.png)
